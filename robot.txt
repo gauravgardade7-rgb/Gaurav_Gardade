@@ -1,1 +1,6 @@
 .sitemap.xml
+User-agent: *
+Allow: /
+ 
+Sitemap: https://gauravgardade7-rgb.github.io/Gaurav_Gardade/sitemap.xml
+ 
