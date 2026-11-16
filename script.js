@@ -45,23 +45,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ---------- Typing effect ---------- */
-  const roles = ['Excel Developer', 'Python Programmer', 'Web Developer', 'Automation Builder'];
   const typingEl = document.getElementById('typingText');
-  let roleIndex = 0, charIndex = 0, deleting = false;
+  if (typingEl) {
+    const roles = ['Excel Developer', 'Python Programmer', 'Web Developer', 'Automation Builder'];
+    let roleIndex = 0, charIndex = 0, deleting = false;
 
-  function typeLoop() {
-    const current = roles[roleIndex];
-    if (!deleting) {
-      typingEl.textContent = current.slice(0, ++charIndex);
-      if (charIndex === current.length) { deleting = true; setTimeout(typeLoop, 1400); return; }
-    } else {
-      typingEl.textContent = current.slice(0, --charIndex);
-      if (charIndex === 0) { deleting = false; roleIndex = (roleIndex + 1) % roles.length; }
+    function typeLoop() {
+      const current = roles[roleIndex];
+      if (!deleting) {
+        typingEl.textContent = current.slice(0, ++charIndex);
+        if (charIndex === current.length) { deleting = true; setTimeout(typeLoop, 1400); return; }
+      } else {
+        typingEl.textContent = current.slice(0, --charIndex);
+        if (charIndex === 0) { deleting = false; roleIndex = (roleIndex + 1) % roles.length; }
+      }
+      setTimeout(typeLoop, deleting ? 45 : 90);
     }
-    setTimeout(typeLoop, deleting ? 45 : 90);
+    typeLoop();
   }
-  typeLoop();
+
+  /* ---------- Dashboard slideshow ---------- */
+  document.querySelectorAll('[data-carousel]').forEach(carousel => {
+    const slides = Array.from(carousel.querySelectorAll('img'));
+    if (slides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let currentIndex = 0;
+      window.setInterval(() => {
+        const currentSlide = slides[currentIndex];
+        const nextIndex = (currentIndex + 1) % slides.length;
+        const nextSlide = slides[nextIndex];
+
+        currentSlide.classList.remove('is-active');
+        currentSlide.classList.add('is-leaving');
+        currentSlide.setAttribute('aria-hidden', 'true');
+
+        nextSlide.classList.remove('is-leaving');
+        nextSlide.classList.add('is-active');
+        nextSlide.setAttribute('aria-hidden', 'false');
+
+        currentIndex = nextIndex;
+        window.setTimeout(() => currentSlide.classList.remove('is-leaving'), 800);
+      }, 4000);
+    }
+  });
 
   /* ---------- Scroll reveal ---------- */
   const revealEls = document.querySelectorAll('.reveal');
@@ -107,22 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.4 });
   skillBars.forEach(el => barObserver.observe(el));
-
-  /* ---------- Active nav link on scroll ---------- */
-  const sections = document.querySelectorAll('main section, .hero');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  const navObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.getAttribute('id');
-        navLinks.forEach(link => {
-          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-        });
-      }
-    });
-  }, { rootMargin: '-45% 0px -50% 0px' });
-  sections.forEach(section => navObserver.observe(section));
 
   /* ---------- Back to top ---------- */
   const backToTop = document.getElementById('backToTop');
