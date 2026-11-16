@@ -4,24 +4,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ---------- Mobile menu ---------- */
-  const menuBtn = document.getElementById('menuBtn');
-  const menu = document.getElementById('menu');
-
-  menuBtn.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('open');
-    menuBtn.classList.toggle('open', isOpen);
-    menuBtn.setAttribute('aria-expanded', isOpen);
-  });
-
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      menu.classList.remove('open');
-      menuBtn.classList.remove('open');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    });
-  });
-
   /* ---------- Theme toggle (persisted) ---------- */
   const themeBtn = document.getElementById('themeBtn');
   const root = document.documentElement;
