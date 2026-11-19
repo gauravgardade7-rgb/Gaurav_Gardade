@@ -46,28 +46,24 @@ document.addEventListener('DOMContentLoaded', () => {
     typeLoop();
   }
 
-  /* ---------- Dashboard slideshow ---------- */
+  /* ---------- Dashboard image controls ---------- */
   document.querySelectorAll('[data-carousel]').forEach(carousel => {
     const slides = Array.from(carousel.querySelectorAll('img'));
-    if (slides.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let currentIndex = 0;
-      window.setInterval(() => {
-        const currentSlide = slides[currentIndex];
-        const nextIndex = (currentIndex + 1) % slides.length;
-        const nextSlide = slides[nextIndex];
+    const previousButton = carousel.querySelector('[data-carousel-prev]');
+    const nextButton = carousel.querySelector('[data-carousel-next]');
+    if (slides.length < 2 || !previousButton || !nextButton) return;
 
-        currentSlide.classList.remove('is-active');
-        currentSlide.classList.add('is-leaving');
-        currentSlide.setAttribute('aria-hidden', 'true');
+    let currentIndex = Math.max(0, slides.findIndex(slide => slide.classList.contains('is-active')));
+    const showSlide = (nextIndex) => {
+      slides[currentIndex].classList.remove('is-active');
+      slides[currentIndex].setAttribute('aria-hidden', 'true');
+      currentIndex = (nextIndex + slides.length) % slides.length;
+      slides[currentIndex].classList.add('is-active');
+      slides[currentIndex].setAttribute('aria-hidden', 'false');
+    };
 
-        nextSlide.classList.remove('is-leaving');
-        nextSlide.classList.add('is-active');
-        nextSlide.setAttribute('aria-hidden', 'false');
-
-        currentIndex = nextIndex;
-        window.setTimeout(() => currentSlide.classList.remove('is-leaving'), 800);
-      }, 4000);
-    }
+    previousButton.addEventListener('click', () => showSlide(currentIndex - 1));
+    nextButton.addEventListener('click', () => showSlide(currentIndex + 1));
   });
 
   /* ---------- Scroll reveal ---------- */
